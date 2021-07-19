@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Блоги</title>
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" th:href="@{/css/main.css}"/>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+</head>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header :: header"></div>
+		<main>
+			<div class="mb-3" th:if="${cookie} != null and ${form} == null">
+				<form th:action="@{/blogs}">
+					<input type="hidden" name="flag" value="on"/>
+					<button type="submit" class="btn btn-primary btn-add" title="Добавить новость"><i class="fas fa-plus"></i></button>
+			    </form>
+			</div>
+			<div th:if="${form} != null">
+				<form th:action="@{/newBlog}" th:object="${form}" method="POST" enctype="multipart/form-data">
+					<div class="form-row mb-3 col-6">
+						<input type="file" class="form-control-file" name="image" th:field="*{image}" id="exampleFormControlFile1">
+					</div>
+					
+					<div class="form-row mb-3 col-6">
+						<input class="form-control" type="text" placeholder="Введите тему" name="title" th:field="*{title}" required >
+					</div>
+					<div class="form-row mb-3 col-6">
+						<textarea class="form-control" type="text" placeholder="Введите текст" name="description" th:field="*{description}" rows="10" required ></textarea>
+					</div>
+					<div class="form-row mb-3 col-2">
+						<button type="submit" class="btn btn-primary" >Загрузить</button>
+					</div>
+				</form>
+			</div>
+			<div th:if="${blogs} != null">
+			
+				<div class="card mb-3" th:each="blog : ${blogs}">
+					<div class="row no-gutters">
+						<div class="card-image col-md-2">
+							<div th:if="${blog.blogImage}!=null">
+								<img th:src="@{${blog.blogImage}}" class="card-img"/>
+							</div>
+						</div>
+						<div class="col-md-10">
+							<div class="card-body">
+							    <h5 class="card-title" th:text="${blog.blogTitle}"></h5>
+							    <p class="card-text" th:text="${blog.getSubTitle()}"></p>
+							    <a href="/blog?id=" th:attrappend="href=${blog.idBlog}"><small>подробнее</small></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div class="reg-panel" th:if="${blogs.isEmpty()}">
+				<p>Здесь пока что ничего нет</p>
+			</div>
+			
+		</main>
+	</div>
+</body>
+</html>
